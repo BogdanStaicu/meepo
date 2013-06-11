@@ -1,0 +1,5 @@
+Cython==0.19.1
+Django==1.5.1
+psycopg2==2.4.6
+South==0.8.1
+Sphinx==1.2b1
