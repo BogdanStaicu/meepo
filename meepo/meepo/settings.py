@@ -1,23 +1,16 @@
-
-from os.path import abspath, basename, dirname, join, normpath
-from sys import path
-
-# Absolute filesystem path to the Django project directory:
-DJANGO_ROOT = dirname(dirname(abspath(__file__)))
-
-# Absolute filesystem path to the top-level project folder:
-SITE_ROOT = dirname(DJANGO_ROOT)
-
-# Site name:
-SITE_NAME = basename(DJANGO_ROOT)
-
-# Add our project to our pythonpath, this way we don't need to type our project
-# name in our dotted import paths:
-path.append(DJANGO_ROOT)
-
+import os
 
 DEBUG = False
 TEMPLATE_DEBUG = DEBUG
+
+# Repository directory
+ROOT = os.path.dirname(os.path.dirname(__file__))
+
+# Django project directory.
+PROJECT_ROOT = os.path.dirname(__file__)
+
+# path bases things off of ROOT
+path = lambda *a: os.path.abspath(os.path.join(ROOT, *a))
 
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
@@ -65,7 +58,7 @@ USE_TZ = True
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/var/www/example.com/media/"
-MEDIA_ROOT = normpath(join(SITE_ROOT, 'media'))
+MEDIA_ROOT = path('media')
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
@@ -76,16 +69,14 @@ MEDIA_URL = '/media/'
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/var/www/example.com/static/"
-STATIC_ROOT = normpath(join(SITE_ROOT, 'static'))
+STATIC_ROOT = path('static')
 
 # URL prefix for static files.
 # Example: "http://example.com/static/", "http://static.example.com/"
 STATIC_URL = '/static/'
 
 # Additional locations of static files
-STATICFILES_DIRS = (
-    # normpath(join(SITE_ROOT, 'static')),
-)
+STATICFILES_DIRS = ()
 
 # List of finder classes that know how to find static files in
 # various locations.
@@ -98,14 +89,24 @@ STATICFILES_FINDERS = (
 SECRET_KEY = '3$a@p*bttk+07=%q5+296jaw7s2(3vyb7(_qz_29qve%aw+7qr'
 
 TEMPLATE_DIRS = (
-    normpath(join(SITE_ROOT, 'templates')),
+    path('templates')
 )
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
-#     'django.template.loaders.eggs.Loader',
+    # 'django.template.loaders.eggs.Loader',
+)
+
+TEMPLATE_CONTEXT_PROCESSORS = (
+    'django.contrib.auth.context_processors.auth',
+#    'django.core.context_processors.debug',
+#    'django.core.context_processors.media',
+#    'django.core.context_processors.static',
+#    'django.core.context_processors.request',
+#
+#    'django.contrib.messages.context_processors.messages',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -126,40 +127,18 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # Uncomment the next line to enable the admin:
     'django.contrib.admin',
-    # Uncomment the next line to enable admin documentation:
-    # 'django.contrib.admindocs',
+    'django.contrib.admindocs',
 )
-
-# A sample logging configuration. The only tangible logging
-# performed by this configuration is to send an email to
-# the site admins on every HTTP 500 error when DEBUG=False.
-# See http://docs.djangoproject.com/en/dev/topics/logging for
-# more details on how to customize your logging configuration.
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'filters': {
-        'require_debug_false': {
-            '()': 'django.utils.log.RequireDebugFalse'
-        }
-    },
-    'handlers': {
-        'mail_admins': {
-            'level': 'ERROR',
-            'filters': ['require_debug_false'],
-            'class': 'django.utils.log.AdminEmailHandler'
-        }
-    },
-    'loggers': {
-        'django.request': {
-            'handlers': ['mail_admins'],
-            'level': 'ERROR',
-            'propagate': True,
-        },
-    }
-}
 
 # Python dotted path to the WSGI application used by Django's runserver.
 WSGI_APPLICATION = 'meepo.wsgi.application'
+
+# Sessions
+SESSION_COOKIE_AGE = 4 * 7 * 24 * 60 * 60  # 4 weeks
+SESSION_COOKIE_SECURE = False
+SESSION_COOKIE_HTTPONLY = True
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False
+SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
+
+ACCOUNT_ACTIVATION_DAYS = 7
